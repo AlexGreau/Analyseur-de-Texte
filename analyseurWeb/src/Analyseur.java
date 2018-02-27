@@ -55,50 +55,40 @@ public class Analyseur {
         debutBalise = balise[0];
         finBalise = balise [1];
 
-        //TODO : sauts de ligne et mise en page
         Scanner sc = new Scanner(new FileReader(title)).useDelimiter("\n");
         File ff= new File("resultat.txt");
-        File source = new File(title);
-        long lFile=source.length();
         ff.createNewFile();
         FileWriter fileWriter=new FileWriter(ff);
-        int cpt=0;
         // TODO : detectiondes pronoms personnels, Date etc et modification de la balise en consequence
-        while (cpt<lFile)
-        {
-            cpt++;
-            if(sc.hasNext()){
-                String s = sc.next();
-                Scanner sc2 = new Scanner(s);
-                while(sc2.hasNext()){
-                    String s2=sc2.next();
-                    if(s2.matches(prenom)){
-                        String next = sc2.next();
-                        if (next.matches(".?" + nom + ".?")){
-                            //System.out.println(s + " " + next + " repere");
-                            fullRep ++;
-                            fileWriter.write(debutBalise);
-                            fileWriter.write(s2 + " " + next);
-                            fileWriter.write(finBalise + " ");
-                        }
-                        else {
-                            // System.out.println(s + " repere");
-                            prenomsRep ++;
-                            fileWriter.write(debutBalise);
-                            fileWriter.write(s2 );
-                            fileWriter.write(finBalise+ " ");
-                        }
-                    }
-                    else if (s2.matches(".?" + nom + ".?")) {
-                        // System.out.println(s + " repere");
-                        nomsRep ++;
+
+        while (sc.hasNext()) {
+            String s = sc.next();
+            Scanner sc2 = new Scanner(s);
+            while (sc2.hasNext()) {
+                String s2 = sc2.next();
+                if (s2.matches(prenom)) {
+                    String next = sc2.next();
+                    if (next.matches(".?" + nom + ".?")) {
+                        //System.out.println(s + " " + next + " repere");
+                        fullRep++;
                         fileWriter.write(debutBalise);
-                        fileWriter.write(s2 );
-                        fileWriter.write(finBalise+ " ");
+                        fileWriter.write(s2 + " " + next);
+                        fileWriter.write(finBalise + " ");
+                    } else {
+                        // System.out.println(s + " repere");
+                        prenomsRep++;
+                        fileWriter.write(debutBalise);
+                        fileWriter.write(s2);
+                        fileWriter.write(finBalise + " ");
                     }
-                    else{
-                        fileWriter.write(s2+" ");
-                    }
+                } else if (s2.matches(".?" + nom + ".?")) {
+                    // System.out.println(s + " repere");
+                    nomsRep++;
+                    fileWriter.write(debutBalise);
+                    fileWriter.write(s2);
+                    fileWriter.write(finBalise + " ");
+                } else {
+                    fileWriter.write(s2 + " ");
                 }
             }
             fileWriter.write("\n");
