@@ -1,9 +1,9 @@
 import java.io.*;
-import java.nio.file.Files;
 import java.util.Scanner;
 
 public class Analyseur {
-    public static String searchLink(String titre) throws FileNotFoundException {
+
+    public static String linkFinder(String titre) throws FileNotFoundException {
         //prends titre.txt et effectue une recherche sur les liens pour voir lesquels sont concernés
         // si lien trouvé, renvoie le nom du link
         String correcTitle = titre.split("\\.")[0];
@@ -36,7 +36,7 @@ public class Analyseur {
         int prenomsRep = 0;
         int fullRep = 0;
         String nom,prenom, completeTitle;
-        String title = "Kyoto.txt";
+        String title = "Alessandro_Papetti.txt";
         String []balise;
         String debutBalise,finBalise;
 
@@ -48,18 +48,19 @@ public class Analyseur {
         completeTitle = title.split("\\.")[0];
 
         // recherche du lien dans les donnees
-        System.out.println(searchLink(completeTitle));
+        System.out.println(linkFinder(completeTitle));
 
         // si lien existe :  creer l'entete de la balise et la fin, pour ensuite les ajouter lors de l'ecriture
-        balise = baliseCreator(searchLink(completeTitle));
+        balise = baliseCreator(linkFinder(completeTitle));
         debutBalise = balise[0];
         finBalise = balise [1];
 
-        //TODO: ecriveur :  gobe a chaque next() et ecrit dans un autre fichier avec les modifications
-
+        //TODO : sauts de ligne et mise en page
 
         Scanner sc = new Scanner(new FileReader(title));
-
+        File ff= new File("resultat.txt");
+        ff.createNewFile();
+        FileWriter fileWriter=new FileWriter(ff);
         while (sc.hasNext())
         {
             String s=sc.next();
@@ -68,17 +69,30 @@ public class Analyseur {
                 if (next.matches(".?" + nom + ".?")){
                     //System.out.println(s + " " + next + " repere");
                     fullRep ++;
+                    fileWriter.write(debutBalise);
+                    fileWriter.write(s + " " + next);
+                    fileWriter.write(finBalise + " ");
                 }
                 else {
                    // System.out.println(s + " repere");
                     prenomsRep ++;
+                    fileWriter.write(debutBalise);
+                    fileWriter.write(s );
+                    fileWriter.write(finBalise+ " ");
                 }
             }
             else if (s.matches(".?" + nom + ".?")) {
                // System.out.println(s + " repere");
                 nomsRep ++;
+                fileWriter.write(debutBalise);
+                fileWriter.write(s );
+                fileWriter.write(finBalise+ " ");
+            }
+            else{
+                fileWriter.write(s+" ");
             }
         }
+        fileWriter.close();
         //print stats
         int totalSpotted = nomsRep + prenomsRep + fullRep;
 
