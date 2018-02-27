@@ -62,27 +62,30 @@ public class Analyseur {
         // TODO : detectiondes pronoms personnels, Date etc et modification de la balise en consequence
 
         while (sc.hasNext()) {
+            // scanner de lignes
             String s = sc.next();
             Scanner sc2 = new Scanner(s);
             while (sc2.hasNext()) {
                 String s2 = sc2.next();
+                // scanner mot à mot
                 if (s2.matches(prenom)) {
+                    // si match vec prenom :  deux solutions
                     String next = sc2.next();
                     if (next.matches(".?" + nom + ".?")) {
-                        //System.out.println(s + " " + next + " repere");
+                        // prenom + nom
                         fullRep++;
                         fileWriter.write(debutBalise);
                         fileWriter.write(s2 + " " + next);
                         fileWriter.write(finBalise + " ");
                     } else {
-                        // System.out.println(s + " repere");
+                        // prenom simple
                         prenomsRep++;
                         fileWriter.write(debutBalise);
                         fileWriter.write(s2);
                         fileWriter.write(finBalise + " ");
                     }
                 } else if (s2.matches(".?" + nom + ".?")) {
-                    // System.out.println(s + " repere");
+                    // nom repere
                     nomsRep++;
                     fileWriter.write(debutBalise);
                     fileWriter.write(s2);
