@@ -3,8 +3,9 @@ import java.nio.file.Files;
 import java.util.Scanner;
 
 public class Analyseur {
-    public static boolean searchLink(String titre) throws FileNotFoundException {
+    public static String searchLink(String titre) throws FileNotFoundException {
         //prends titre.txt et effectue une recherche sur les liens pour voir lesquels sont concernés
+        // si lien trouvé, renvoie le nom du link
         String correcTitle = titre.split("\\.")[0];
         System.out.println(correcTitle);
         // ajouter "http://en.wikipedia.org/wiki/" devant le titee pour obtenir le lien
@@ -15,11 +16,20 @@ public class Analyseur {
         while (scanner.hasNext()){
             String s = scanner.next();
             if (s.matches(linkName)){
-                return true;
+                return linkName;
             }
         }
-        return false;
+        return "null";
     }
+
+    public static String[] baliseCreator(String linkName){
+        // <entity name=”http://en.wikipedia.org/wiki/Catherine_Deneuve”>Catherine Deneuve</entity>
+        String [] stringTab = new String[2];
+        stringTab[0] = "<entity name=”" + linkName + "”>";
+        stringTab[1] = "</entity>";
+        return stringTab;
+    }
+
     public static  void main(String [] args) throws IOException
     {
         int nomsRep = 0;
@@ -27,6 +37,8 @@ public class Analyseur {
         int fullRep = 0;
         String nom,prenom, completeTitle;
         String title = "Kyoto.txt";
+        String []balise;
+        String debutBalise,finBalise;
 
         // deduire du titre le nom de l'entite
         String [] entities = title.split("_"); // deduire du titre le nom de l'entite
@@ -34,7 +46,17 @@ public class Analyseur {
         prenom = entities[0];
         nom = entities[entities.length - 1].split("\\.")[0];
         completeTitle = title.split("\\.")[0];
+
+        // recherche du lien dans les donnees
         System.out.println(searchLink(completeTitle));
+
+        // si lien existe :  creer l'entete de la balise et la fin, pour ensuite les ajouter lors de l'ecriture
+        balise = baliseCreator(searchLink(completeTitle));
+        debutBalise = balise[0];
+        finBalise = balise [1];
+
+        //TODO: ecriveur :  gobe a chaque next() et ecrit dans un autre fichier avec les modifications
+
 
         Scanner sc = new Scanner(new FileReader(title));
 
