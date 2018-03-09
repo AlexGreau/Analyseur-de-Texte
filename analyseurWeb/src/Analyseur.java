@@ -54,9 +54,6 @@ public class Analyseur {
     }
 
     public static String dateExtractor(String doc){
-        // TODO : detection Date etc et modification de la balise en consequence
-
-        //DD mois annee || mois annee ||annee
         // prendre premiere date avant ")"
         Scanner sc = null;
         try {
@@ -74,34 +71,34 @@ public class Analyseur {
             String actual = scanner.next();
             if (actual.matches(anneePatern)){
                 found = true;
-                datestr.append(actual);
+                datestr.insert(0,actual);
             }else if (actual.matches("January")){
-                datestr.append("01/");
+                datestr.insert(0,"/01");
             }else if (actual.matches("February")){
-                datestr.append("02");
+                datestr.insert(0,"/02");
             }else if (actual.matches("March")){
-                datestr.append("03");
+                datestr.insert(0,"/03");
             }else if (actual.matches("April")){
-                datestr.append("04");
+                datestr.insert(0,"/04");
             }else if (actual.matches("May")){
-                datestr.append("05");
+                datestr.insert(0,"/05");
             }else if (actual.matches("June")){
-                datestr.append("06");
+                datestr.insert(0,"/06");
             }else if (actual.matches("July")){
-                datestr.append("07");
+                datestr.insert(0,"/07");
             }else if (actual.matches("August")){
-                datestr.append("08");
+                datestr.insert(0,"/08");
             }else if (actual.matches("September")){
-                datestr.append("09");
+                datestr.insert(0,"/09");
             }else if (actual.matches("October")){
-                datestr.append("10");
+                datestr.insert(0,"/10");
             }else if (actual.matches("November")){
-                datestr.append("11");
+                datestr.insert(0,"/11");
             }else if (actual.matches("December")){
-                datestr.append("12");
+                datestr.insert(0,"/12");
             }
             else if (actual.matches(jourPattern)){
-                datestr.append(actual+"/");
+                datestr.append("/" + actual);
             }
         }
         System.out.println(datestr.toString());
@@ -116,7 +113,7 @@ public class Analyseur {
         int fullRep = 0;
         int pronomsRep = 0;
         String nom,prenom, completeTitle;
-        String title = "Kyoto.txt";
+        String title = "Benjamin_Biolay.txt";
         String link;
         dateExtractor(title);
         // deduire du titre le nom de l'entite
