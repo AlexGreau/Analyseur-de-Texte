@@ -19,3 +19,7 @@ EXERCICE 2 :
   - date
 la date de naissance des entité, si elle existe, est la première date suivant la première parenthèse ouvrante. Celle ci se trouvant toujours dans la premiere phrase nous avons split le texte au niveau des parenthese ouvrantes et scannons les String obtenues, la premiere date trouvée interrompt la recherche. Dans notre programme, un jour est un [0-9]?[0-9], une annee [0-9]{4}, pour le mois, l'expression [A-Za-z]{3,9} n'étant pas assez restrictive, nous avons énumeré les différents mois.
 Nous avons ensuite construit la balise à l'aide d'un StringBuilder.
+
+EXERCICE 3 :
+	-type
+le type des entité se trouve à la fin de la premiere phrase. nous splitons donc le texte une premiere fois sur le "." pour obtenir la premiere phrase mais etant donné qu'il peut arriver que des points se trouve dans la partie sur la prononciation de l'entité nous effectuons unsplit preliminaire sur la paranthese fermante afin d'obtenir la fin de la premiere phrase où se trouve ce qui nous interresse. Ensite nous recherchons un mot clé tels que is ou was car se qui suit correspond au type que nous recherchons.
