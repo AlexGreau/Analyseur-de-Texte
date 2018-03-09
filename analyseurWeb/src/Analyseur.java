@@ -171,7 +171,8 @@ public class Analyseur {
         link = linkFinder(completeTitle);
         String cheminFichier="analyseurWeb/" + title;
         Scanner sc = new Scanner(new FileReader(cheminFichier)).useDelimiter("\n");
-        File ff= new File("resultat.txt");
+        String fichierSortie="analyseurWeb/"+prenom+nom+"modif.txt";
+        File ff= new File(fichierSortie);
         ff.createNewFile();
         FileWriter fileWriter = new FileWriter(ff);
 
