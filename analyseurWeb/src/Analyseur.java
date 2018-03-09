@@ -1,4 +1,6 @@
 import java.io.*;
+import java.time.Month;
+import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -64,27 +66,29 @@ public class Analyseur {
         boolean found = false;
         boolean end = false;
         Pattern anneePatern = Pattern.compile("[0-9]{4}"); // annee
-        String moisPattern = "[A-Za-z]{3,9}"; // mois
+        Pattern moisPattern = Pattern.compile("[A-Za-z]{3,9}"); // mois
         Pattern jourPattern = Pattern.compile("[0-9]?[0-9]"); // jourd
         while (sc.hasNext() && found == false && end == false){
-            if (sc.next().matches("\\)")){
+            String actual = sc.next();
+            if (actual.matches("([^)]+)\\)")){
                 // on veut trouver uniquement la date au debut du doc, entre parentheses
                 end = true;
+                System.out.println("parenthese detectee");
             }
-            else if (sc.next().matches(moisPattern)){
+            else if (actual.matches(moisPattern.toString())){
                 String next = sc.next();
                 if (next.matches(anneePatern.toString())){
                     found = true;
-                    System.out.println("mois + annee");
+                    System.out.println("mois + annee " + actual);
                 }
             }
-            else if (sc.next().matches(anneePatern.toString())){
+            else if (actual.matches(anneePatern.toString())){
                 // aaaa
                 found = true;
-                System.out.println("annee");
+                System.out.println("annee " + actual);
                 // ajouter au format de date et declarer " hasdate" dans la balise
             }
-            else if (sc.next().matches(jourPattern.toString())){
+            else if (actual.matches(jourPattern.toString())){
                 // ddmmaaa
                 String next = sc.next();
                 if (next.matches(moisPattern.toString())){
@@ -169,9 +173,10 @@ public class Analyseur {
             fileWriter.write("\n");
         }
         fileWriter.close();
+
+
         //print stats
         int totalSpotted = nomsRep + prenomsRep + fullRep;
-
         System.out.println(" nomsRep = " + nomsRep + "\n prenoms = " + prenomsRep + "\n fullname = " + fullRep + "\npronoms = "+ pronomsRep+"\n \n TOTAL SPOTTED : " + totalSpotted);
     }
 }
