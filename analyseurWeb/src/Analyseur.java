@@ -1,5 +1,7 @@
 import java.io.*;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Analyseur {
 
@@ -24,10 +26,6 @@ public class Analyseur {
 
     public static String baliseCreator(String linkName, String corpse ){
         // <entity name=”http://en.wikipedia.org/wiki/Catherine_Deneuve”>Catherine Deneuve</entity>
- /*       String [] stringTab = new String[2];
-        stringTab[0] = "<entity name=”" + linkName + "”>";
-        stringTab[1] = "</entity>";
-*/
         StringBuffer buff = new StringBuffer();
         buff.append("<entity name=”");
         buff.append(linkName);
@@ -52,6 +50,55 @@ public class Analyseur {
         return false;
     }
 
+    public static String dateExtractor(String doc){
+        // TODO : detection Date etc et modification de la balise en consequence
+
+        //DD mois annee || mois annee ||annee
+        // prendre premiere date avant ")"
+        Scanner sc = null;
+        try {
+            sc = new Scanner(new FileReader(doc));
+        } catch (FileNotFoundException e) {
+            System.out.println("doc not found !!! \n");
+        }
+        boolean found = false;
+        boolean end = false;
+        Pattern anneePatern = Pattern.compile("[0-9]{4}"); // annee
+        String moisPattern = "[A-Za-z]{3,9}"; // mois
+        Pattern jourPattern = Pattern.compile("[0-9]?[0-9]"); // jourd
+        while (sc.hasNext() && found == false && end == false){
+            if (sc.next().matches("\\)")){
+                // on veut trouver uniquement la date au debut du doc, entre parentheses
+                end = true;
+            }
+            else if (sc.next().matches(moisPattern)){
+                String next = sc.next();
+                if (next.matches(anneePatern.toString())){
+                    found = true;
+                    System.out.println("mois + annee");
+                }
+            }
+            else if (sc.next().matches(anneePatern.toString())){
+                // aaaa
+                found = true;
+                System.out.println("annee");
+                // ajouter au format de date et declarer " hasdate" dans la balise
+            }
+            else if (sc.next().matches(jourPattern.toString())){
+                // ddmmaaa
+                String next = sc.next();
+                if (next.matches(moisPattern.toString())){
+                    String nextnext = sc.next();
+                    if (nextnext.matches(anneePatern.toString())){
+                        found = true;
+                        System.out.println("full date");
+                    }
+                }
+            }
+        }
+        return "no date found";
+    }
+
     public static  void main(String [] args) throws IOException
     {
         int nomsRep = 0;
@@ -61,7 +108,7 @@ public class Analyseur {
         String nom,prenom, completeTitle;
         String title = "Alessandro_Papetti.txt";
         String link;
-
+        dateExtractor(title);
         // deduire du titre le nom de l'entite
         String [] entities = title.split("_"); // deduire du titre le nom de l'entite
         //prenom & nom separes
@@ -84,7 +131,6 @@ public class Analyseur {
         FileWriter fileWriter = new FileWriter(ff);
         // TODO :  exception du premier grand nom ex : david jean bailey
 
-        // TODO : detectiondes pronoms personnels, Date etc et modification de la balise en consequence
 
         while (sc.hasNext()) {
             // scanner de lignes
@@ -110,10 +156,10 @@ public class Analyseur {
                     // nom repere
                     nomsRep++;
                     fileWriter.write(baliseCreator(link, s2));
-                }else if (sexe = true && s2.matches(".?She") ||s2.matches("she")) {
+                }else if (sexe == true && s2.matches(".?She") ||s2.matches("she")) {
                     fileWriter.write(baliseCreator(link, s2));
                     pronomsRep++;
-                }else if (sexe = false && s2.matches(".?He") ||s2.matches("he")){
+                }else if (sexe == false && s2.matches(".?He") ||s2.matches("he")){
                     fileWriter.write(baliseCreator(link, s2));
                     pronomsRep++;
                 } else {
