@@ -3,6 +3,7 @@ import java.time.Month;
 import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Analyseur {
@@ -59,47 +60,52 @@ public class Analyseur {
         // prendre premiere date avant ")"
         Scanner sc = null;
         try {
-            sc = new Scanner(new FileReader(doc));
+            sc = new Scanner(new FileReader(doc)).useDelimiter("\\)");
         } catch (FileNotFoundException e) {
             System.out.println("doc not found !!! \n");
         }
         boolean found = false;
-        boolean end = false;
-        Pattern anneePatern = Pattern.compile("[0-9]{4}"); // annee
-        Pattern moisPattern = Pattern.compile("[A-Za-z]{3,9}"); // mois
-        Pattern jourPattern = Pattern.compile("[0-9]?[0-9]"); // jourd
-        while (sc.hasNext() && found == false && end == false){
-            String actual = sc.next();
-            if (actual.matches("([^)]+)\\)")){
-                // on veut trouver uniquement la date au debut du doc, entre parentheses
-                end = true;
-                System.out.println("parenthese detectee");
-            }
-            else if (actual.matches(moisPattern.toString())){
-                String next = sc.next();
-                if (next.matches(anneePatern.toString())){
-                    found = true;
-                    System.out.println("mois + annee " + actual);
-                }
-            }
-            else if (actual.matches(anneePatern.toString())){
-                // aaaa
+        String anneePatern = "[0-9]{4}"; // annee
+        String jourPattern = "[0-9]?[0-9]"; // jourd
+        String firstSentence = sc.next();
+        Scanner scanner = new Scanner(firstSentence);
+        StringBuilder datestr = new StringBuilder();
+        while (scanner.hasNext() && found == false){
+            String actual = scanner.next();
+            if (actual.matches(anneePatern)){
                 found = true;
-                System.out.println("annee " + actual);
-                // ajouter au format de date et declarer " hasdate" dans la balise
+                datestr.append(actual);
+            }else if (actual.matches("January")){
+                datestr.append("01/");
+            }else if (actual.matches("February")){
+                datestr.append("02");
+            }else if (actual.matches("March")){
+                datestr.append("03");
+            }else if (actual.matches("April")){
+                datestr.append("04");
+            }else if (actual.matches("May")){
+                datestr.append("05");
+            }else if (actual.matches("June")){
+                datestr.append("06");
+            }else if (actual.matches("July")){
+                datestr.append("07");
+            }else if (actual.matches("August")){
+                datestr.append("08");
+            }else if (actual.matches("September")){
+                datestr.append("09");
+            }else if (actual.matches("October")){
+                datestr.append("10");
+            }else if (actual.matches("November")){
+                datestr.append("11");
+            }else if (actual.matches("December")){
+                datestr.append("12");
             }
-            else if (actual.matches(jourPattern.toString())){
-                // ddmmaaa
-                String next = sc.next();
-                if (next.matches(moisPattern.toString())){
-                    String nextnext = sc.next();
-                    if (nextnext.matches(anneePatern.toString())){
-                        found = true;
-                        System.out.println("full date");
-                    }
-                }
+            else if (actual.matches(jourPattern)){
+                datestr.append(actual+"/");
             }
         }
+        System.out.println(datestr.toString());
+
         return "no date found";
     }
 
@@ -110,7 +116,7 @@ public class Analyseur {
         int fullRep = 0;
         int pronomsRep = 0;
         String nom,prenom, completeTitle;
-        String title = "Alessandro_Papetti.txt";
+        String title = "Kyoto.txt";
         String link;
         dateExtractor(title);
         // deduire du titre le nom de l'entite
