@@ -56,6 +56,7 @@ public class Analyseur {
     public static String dateExtractor(String doc){
         // prendre premiere date avant ")"
         Scanner sc = null;
+        StringBuilder resultat = new StringBuilder();
         try {
             sc = new Scanner(new FileReader(doc)).useDelimiter("\\)");
         } catch (FileNotFoundException e) {
@@ -70,8 +71,8 @@ public class Analyseur {
         while (scanner.hasNext() && found == false){
             String actual = scanner.next();
             if (actual.matches(anneePatern)){
-                found = true;
                 datestr.insert(0,actual);
+                found = true;
             }else if (actual.matches("January")){
                 datestr.insert(0,"/01");
             }else if (actual.matches("February")){
@@ -102,8 +103,22 @@ public class Analyseur {
             }
         }
         System.out.println(datestr.toString());
+        resultat.append("<");
+        try {
+            resultat.append(linkFinder(doc));
+        } catch (FileNotFoundException e) {
+            return "doc not found !!!";
+        }
+        resultat.append(",");
+        if (found == true){
+            resultat.append("hasDate,");
+        }else {
+            resultat.append("noDate,");
+        }
+        resultat.append(datestr);
+        resultat.append(">");
 
-        return "no date found";
+        return resultat.toString();
     }
 
     public static  void main(String [] args) throws IOException
@@ -115,7 +130,7 @@ public class Analyseur {
         String nom,prenom, completeTitle;
         String title = "Benjamin_Biolay.txt";
         String link;
-        dateExtractor(title);
+        System.out.println(dateExtractor(title));
         // deduire du titre le nom de l'entite
         String [] entities = title.split("_"); // deduire du titre le nom de l'entite
         //prenom & nom separes
