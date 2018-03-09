@@ -1,10 +1,5 @@
 import java.io.*;
-import java.time.Month;
-import java.util.Date;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Analyseur {
 
@@ -24,7 +19,7 @@ public class Analyseur {
                 return linkName;
             }
         }
-        return "null";
+        return "LinkNotFound";
     }
 
     public static String baliseCreator(String linkName, String corpse ){
@@ -102,7 +97,6 @@ public class Analyseur {
                 datestr.append("/" + actual);
             }
         }
-        System.out.println(datestr.toString());
         resultat.append("<");
         try {
             resultat.append(linkFinder(doc));
@@ -123,10 +117,6 @@ public class Analyseur {
 
     public static  void main(String [] args) throws IOException
     {
-        int nomsRep = 0;
-        int prenomsRep = 0;
-        int fullRep = 0;
-        int pronomsRep = 0;
         String nom,prenom, completeTitle;
         String title = "Benjamin_Biolay.txt";
         String link;
@@ -146,14 +136,12 @@ public class Analyseur {
         // si lien existe :  creer l'entete de la balise et la fin, pour ensuite les ajouter lors de l'ecriture
         link = linkFinder(completeTitle);
 
-
         Scanner sc = new Scanner(new FileReader(title)).useDelimiter("\n");
         File ff= new File("resultat.txt");
         ff.createNewFile();
         FileWriter fileWriter = new FileWriter(ff);
+
         // TODO :  exception du premier grand nom ex : david jean bailey
-
-
         while (sc.hasNext()) {
             // scanner de lignes
             String s = sc.next();
@@ -166,24 +154,19 @@ public class Analyseur {
                     String next = sc2.next();
                     if (next.matches(".?" + nom + ".?")) {
                         // prenom + nom
-                        fullRep++;
                         fileWriter.write(baliseCreator(link,s2 + " " + next));
                     } else {
                         // prenom simple
-                        prenomsRep++;
                         fileWriter.write(baliseCreator(link, s2));
 
                     }
                 } else if (s2.matches(".?" + nom + ".?")) {
                     // nom repere
-                    nomsRep++;
                     fileWriter.write(baliseCreator(link, s2));
                 }else if (sexe == true && s2.matches(".?She") ||s2.matches("she")) {
                     fileWriter.write(baliseCreator(link, s2));
-                    pronomsRep++;
                 }else if (sexe == false && s2.matches(".?He") ||s2.matches("he")){
                     fileWriter.write(baliseCreator(link, s2));
-                    pronomsRep++;
                 } else {
                     fileWriter.write(s2 + " ");
                 }
@@ -191,10 +174,5 @@ public class Analyseur {
             fileWriter.write("\n");
         }
         fileWriter.close();
-
-
-        //print stats
-        int totalSpotted = nomsRep + prenomsRep + fullRep;
-        System.out.println(" nomsRep = " + nomsRep + "\n prenoms = " + prenomsRep + "\n fullname = " + fullRep + "\npronoms = "+ pronomsRep+"\n \n TOTAL SPOTTED : " + totalSpotted);
     }
 }
