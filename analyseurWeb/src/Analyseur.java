@@ -4,13 +4,13 @@ import java.util.Scanner;
 public class Analyseur {
 
     public static String linkFinder(String titre) throws FileNotFoundException {
-        //prends titre.txt et effectue une recherche sur les liens pour voir lesquels sont concernés
-        // si lien trouvé, renvoie le nom du link
+        //prends titre.txt et effectue une recherche sur les liens pour voir lesquels sont concernÃ©s
+        // si lien trouve, renvoie le nom du link
         String correcTitle = titre.split("\\.")[0];
         System.out.println(correcTitle);
         // ajouter "http://en.wikipedia.org/wiki/" devant le titee pour obtenir le lien
         String linkName = "http://en.wikipedia.org/wiki/" + correcTitle;
-        String ressourcesPath = "entity_list.txt";
+        String ressourcesPath = "analyseurWeb/entity_list.txt";
         FileReader fileReader = new FileReader(ressourcesPath);
         Scanner scanner = new Scanner(fileReader);
         while (scanner.hasNext()){
@@ -23,11 +23,11 @@ public class Analyseur {
     }
 
     public static String baliseCreator(String linkName, String corpse ){
-        // <entity name=”http://en.wikipedia.org/wiki/Catherine_Deneuve”>Catherine Deneuve</entity>
+        // <entity name="http://en.wikipedia.org/wiki/Catherine_Deneuveâ€�>Catherine Deneuve</entity>
         StringBuffer buff = new StringBuffer();
-        buff.append("<entity name=”");
+        buff.append("<entity name=\"");
         buff.append(linkName);
-        buff.append("”>");
+        buff.append("\">");
         buff.append(corpse);
         buff.append("</entity>");
 
@@ -52,8 +52,9 @@ public class Analyseur {
         // prendre premiere date avant ")"
         Scanner sc = null;
         StringBuilder resultat = new StringBuilder();
+        String cheminFichier="analyseurWeb/" + doc;
         try {
-            sc = new Scanner(new FileReader(doc)).useDelimiter("\\)");
+            sc = new Scanner(new FileReader(cheminFichier)).useDelimiter("\\)");
         } catch (FileNotFoundException e) {
             System.out.println("doc not found !!! \n");
         }
@@ -114,6 +115,38 @@ public class Analyseur {
 
         return resultat.toString();
     }
+    
+    public static  String extracteurType(String title) throws IOException
+    {
+	  String cheminFichier="analyseurWeb/" + title;
+	  //scanner pour avoir eviter les eventuelles premier . en prononciation
+	  Scanner sc = new Scanner(new FileReader(cheminFichier)).useDelimiter("\\)");
+	  sc.next();
+	  String first=sc.next();
+	  //scanner pour recuperer la fin de la premiere phrase
+	  Scanner sc2 = new Scanner(first).useDelimiter("\\.");
+	  first=sc2.next();
+	  String resultat="<\"http://en.wikipedia.org/wiki/";
+	  resultat+=title.split("\\.")[0];
+	  resultat+="\", \"type\",";
+	  //scanner pour trouver le type
+	  Scanner sc3 = new Scanner(first);
+	  while(sc3.hasNext()){
+		  String next=sc3.next();
+		  if(next.matches("is")||next.matches("was")){
+			  sc3.next();
+			  while(sc3.hasNext()){
+				  resultat+=sc3.next()+" ";
+			  }
+			  resultat+=">";
+		  }
+	  }
+	  sc.close();
+	  sc2.close();
+	  sc3.close();
+	  return resultat;
+	  
+    }
 
     public static  void main(String [] args) throws IOException
     {
@@ -121,6 +154,7 @@ public class Analyseur {
         String title = "Benjamin_Biolay.txt";
         String link;
         System.out.println(dateExtractor(title));
+        System.out.println(extracteurType(title));
         // deduire du titre le nom de l'entite
         String [] entities = title.split("_"); // deduire du titre le nom de l'entite
         //prenom & nom separes
@@ -135,8 +169,8 @@ public class Analyseur {
 
         // si lien existe :  creer l'entete de la balise et la fin, pour ensuite les ajouter lors de l'ecriture
         link = linkFinder(completeTitle);
-
-        Scanner sc = new Scanner(new FileReader(title)).useDelimiter("\n");
+        String cheminFichier="analyseurWeb/" + title;
+        Scanner sc = new Scanner(new FileReader(cheminFichier)).useDelimiter("\n");
         File ff= new File("resultat.txt");
         ff.createNewFile();
         FileWriter fileWriter = new FileWriter(ff);
@@ -148,7 +182,7 @@ public class Analyseur {
             Scanner sc2 = new Scanner(s);
             while (sc2.hasNext()) {
                 String s2 = sc2.next();
-                // scanner mot à mot
+                // scanner mot Ã  mot
                 if (s2.matches(prenom)) {
                     // si match vec prenom :  deux solutions
                     String next = sc2.next();
